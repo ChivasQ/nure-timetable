@@ -32,7 +32,7 @@
         </div>
 
         <div class="main-content">
-            <div class="table-responsive h-100">
+            <div class="table-responsive h-100" id="scroll-x">
                 <table class="table table-bordered text-center align-middle schedule-table">
                     <thead class="bg-light sticky-top">
                         <tr>
@@ -79,6 +79,16 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const container = document.getElementById("scroll-x");
+
+        container.addEventListener("wheel", (event) => {
+            event.preventDefault();
+
+            container.scrollLeft += event.deltaY*5; 
+        });
+    </script>
 
 </body>
 </html>
