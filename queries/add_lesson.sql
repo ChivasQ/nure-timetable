@@ -1,3 +1,4 @@
+--+PARAMS: arg1 arg2 arg3
 INSERT INTO Schedule (schedule_date, time_slot_id, teacher_id, subject_id, classroom_id, lesson_type_id) 
 VALUES ('2025-09-01', 2, 1, 1, 1, 1);
 
