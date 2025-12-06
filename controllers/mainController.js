@@ -1,4 +1,6 @@
 const { executeQuery } = require('../connection');
+const QueryManager = require('../repository/QueryManager');
+
 function formatDate(dateInput) {
     const d = new Date(dateInput);
     const year = d.getFullYear();
@@ -9,23 +11,25 @@ function formatDate(dateInput) {
 
 const getMainPage = async (req, res) => {
     try {
-        //Хардкод дати для тесту
-        const today = new Date("2025-09-01T12:00:00");
-        const dayOfWeek = today.getDay(); // 0 (Вс) - 6 (Сб)
+
+        let queryDate = req.query.date ? new Date(req.query.date) : new Date();
+
+        if (isNaN(queryDate.getTime())) queryDate = new Date();
+
+        const selectedGroupId = req.query.group_id || 1; 
+
+        queryDate.setHours(12, 0, 0, 0);
+
+        const today = new Date(queryDate);
+        const dayOfWeek = today.getDay();
         const diffToMon = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
         
         const monday = new Date(today);
         monday.setDate(diffToMon);
 
         const weekDates = [];
-        
-        for (let i = 0; i < 100; i++) { //токи так
-            const d = new Date(monday);
-            d.setDate(monday.getDate() + i);
-            weekDates.push(formatDate(d));
-        }
 
-        console.log("Даты недели:", weekDates);
+        const groupsList = await executeQuery("SELECT id, name FROM StudentGroups ORDER BY name");
 
         const timeSlots = await executeQuery("SELECT * FROM TimeSlots ORDER BY pair_number");
 
@@ -45,12 +49,22 @@ const getMainPage = async (req, res) => {
             JOIN LessonTypes lt ON s.lesson_type_id = lt.id
             JOIN ScheduleGroups sg ON s.id = sg.schedule_id
             JOIN StudentGroups g ON sg.group_id = g.id
-            WHERE s.schedule_date >= '${weekDates[0]}'
-            AND g.name = 'КН-23-1'
+            WHERE s.schedule_date >= '${formatDate(monday.getDate())}'
+            AND g.id = ${selectedGroupId}
         `; //поки що так
-        
         const scheduleData = await executeQuery(sql);
-        console.log("Найдено занятий:", scheduleData.length);
+
+        const maxDate = 'SELECT MAX(s.schedule_date) FROM Schedule s'
+        const [maxDateData] = await executeQuery(maxDate);
+        const dateDiff = 100;
+        for (let i = 0; i < dateDiff; i++) { //токи так
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + i);
+            weekDates.push(formatDate(d));
+        }
+        console.log("Дати неділі:", weekDates);
+
+        console.log("Знайдено занять:", scheduleData.length);
 
         //Маппінг даних
         const scheduleMap = {};
@@ -69,7 +83,10 @@ const getMainPage = async (req, res) => {
         res.render("main", { 
             weekDates, 
             timeSlots, 
-            scheduleMap
+            scheduleMap,
+            groupsList,
+            selectedGroup: selectedGroupId,
+            selectedDate: formatDate(queryDate)
         });
 
     } catch (e) {

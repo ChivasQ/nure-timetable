@@ -70,10 +70,11 @@ body, html {
     left: 0;
     background-color: #fff;
     z-index: 5;
-    border-right: 2px solid #dee2e6;
+    border: 2px solid #dee2e6;
 }
 
 .schedule-table thead th:first-child {
     z-index: 10;
+    border: 2px solid #dee2e6;
     background-color: #f8f9fa;
 }

@@ -27,16 +27,16 @@ connection.connect(function(err) {
     console.log("Connected to db :)");
 });
 
-function executeQuery(sqlQuery) {
+function executeQuery(sqlQuery, params = []) {
     return new Promise((resolve, reject) => {
-        connection.query(sqlQuery, (error, results) => {
+        connection.query(sqlQuery, params, (error, results) => {
             if (error) {
                 reject(error);
             } else {
                 resolve(results);
             }
         });
-    })
+    });
 }
 
 module.exports = {

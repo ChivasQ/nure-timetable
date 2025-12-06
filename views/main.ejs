@@ -16,19 +16,28 @@
 
     <div class="layout-wrapper">
         <div class="sidebar p-3">
-            <h5 class="mb-3">Налаштування</h5>
-            <div class="mb-3">
-                <label class="form-label">Дата</label>
-                <input type="date" class="form-control" id="datePicker">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Група</label>
-                <select class="form-select">
-                    <option>КН-23-1</option>
-                    <option>КН-23-2</option>
-                </select>
-            </div>
-            <button class="btn btn-primary w-100">Показати</button>
+            <form action="/" method="GET">
+                <h5 class="mb-3">Налаштування</h5>
+
+                <div class="mb-3">
+                    <label class="form-label">Дата</label>
+                    <input type="date" class="form-control" name="date" 
+                        value="<%= selectedDate %>"> 
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Група</label>
+                    <select class="form-select" name="group_id">
+                        <% groupsList.forEach(g => { %>
+                            <option value="<%= g.id %>" <%= g.id == selectedGroup ? 'selected' : '' %>>
+                                <%= g.name %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Показати</button>
+            </form>
         </div>
 
         <div class="main-content">
@@ -65,7 +74,8 @@
                                                 <div class="fw-bold text-dark"><%= lesson.subject %></div>
                                                 <div class="small text-muted">
                                                     📍 <%= lesson.room_number %><br>
-                                                    👤 <%= lesson.teacher %>
+                                                    👤 <%= lesson.teacher %><br>
+                                                    🐱‍👤 <%= lesson.group_name %>
                                                 </div>
                                             </div>
                                         <% } %>
