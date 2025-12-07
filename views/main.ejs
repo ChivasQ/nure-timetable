@@ -54,7 +54,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% timeSlots.forEach(slot => { %>
+                        <% 
+                           const skipMap = {}; 
+                        %>
+
+                        <% timeSlots.forEach((slot, slotIndex) => { %>
                             <tr>
                                 <td class="time-col text-muted">
                                     <small><%= slot.pair_number %> пара</small><br>
@@ -64,13 +68,42 @@
 
                                 <% weekDates.forEach(date => { %>
                                     <% 
+                                        const cellKey = date + '_' + slot.id;
+
+                                        if (skipMap[cellKey]) return;
+
                                         const lesson = scheduleMap[date] ? scheduleMap[date][slot.id] : null; 
+                                        
+                                        let rowspan = 1;
+
+                                        if (lesson) {
+                                            for (let i = slotIndex + 1; i < timeSlots.length; i++) {
+                                                const nextSlot = timeSlots[i];
+                                                const nextLesson = scheduleMap[date] ? scheduleMap[date][nextSlot.id] : null;
+
+                                                if (nextLesson && 
+                                                    nextLesson.subject === lesson.subject && 
+                                                    nextLesson.type === lesson.type &&
+                                                    nextLesson.room_number === lesson.room_number
+                                                    ) {
+                                                    
+                                                    rowspan++;
+                                                    skipMap[date + '_' + nextSlot.id] = true;
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+                                        }
                                     %>
                                     
-                                    <td class="schedule-cell <%= lesson ? 'has-lesson' : '' %>">
+                                    <td rowspan="<%= rowspan %>" class="schedule-cell <%= lesson ? 'has-lesson' : 'has-lesson' %>">
                                         <% if (lesson) { %>
-                                            <div class="lesson-card p-2 text-start">
-                                                <div class="badge bg-primary mb-1"><%= lesson.type %></div>
+                                            <div class="lesson-card p-2 text-start
+                                                <%= lesson.type == 'Лк'? 'card-lecture' : '' %>
+                                                <%= lesson.type == 'Пз'? 'card-practical' : '' %>
+                                                <%= lesson.type == 'Лб'? 'card-laboratory' : '' %>"
+                                                style='height: <%= rowspan==1 ? 120 : rowspan * 130 %>px'>          
+                                                <div class="badge mb-1 colored-badge"><%= lesson.type %></div>
                                                 <div class="fw-bold text-dark"><%= lesson.subject %></div>
                                                 <div class="small text-muted">
                                                     📍 <%= lesson.room_number %><br>
@@ -78,6 +111,7 @@
                                                     🐱‍👤 <%= lesson.group_name %>
                                                 </div>
                                             </div>
+                                            <span class="tooltiptext">Schedule id: <%= lesson.id %></span> 
                                         <% } %>
                                     </td>
 
@@ -90,15 +124,6 @@
         </div>
     </div>
 
-    <script>
-        const container = document.getElementById("scroll-x");
-
-        container.addEventListener("wheel", (event) => {
-            event.preventDefault();
-
-            container.scrollLeft += event.deltaY*5; 
-        });
-    </script>
-
+    <script src="/js/scrollX.js"></script>
 </body>
 </html>

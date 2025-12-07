@@ -25,12 +25,20 @@ body, html {
 }
 
 #scroll-x {
+    scroll-snap-type: x mandatory; 
+    scroll-padding-inline-start: 55px;
+    overflow-x: auto;
     scroll-behavior: smooth;
+}
+
+.schedule-table th, 
+.schedule-cell {
+    scroll-snap-align: start; 
 }
 
 .schedule-table {
     margin-bottom: 0;
-    height: 100%;
+    height: auto;
 }
 
 .schedule-table th {
@@ -45,24 +53,57 @@ body, html {
     font-size: 0.85rem;
     white-space: nowrap;
     height: 120px; 
+    vertical-align: middle;
 }
 
 .schedule-cell {
-    height: 120px; 
     vertical-align: top;
     padding: 0px;
     min-width: 200px;
+    position: relative;
 }
 
+
 .lesson-card {
+    height: 100%;
+    min-height: 120px;
+    
     background-color: #e8f0fe;
     border-radius: 4px;
     border-left: 4px solid #0d6efd;
-    height: 120px;
-    min-height: 120px;
     overflow: hidden;
     font-size: 0.9rem;
+    box-sizing: border-box;
 }
+
+.card-lecture {
+    background-color: #bcc3ff;
+    border-left: 4px solid #0d6efd;
+}
+
+.card-lecture .colored-badge {
+    background-color: #0d6efd;
+}
+
+.card-practical {
+    background-color: #bcffc7;
+    border-left: 4px solid #10bd00;
+}
+
+.card-practical .colored-badge {
+    background-color: #10bd00;
+}
+
+.card-laboratory {
+    background-color: #f7bcff;
+    border-left: 4px solid #d200e6;
+}
+
+.card-laboratory .colored-badge {
+    background-color: #d200e6;
+}
+
+
 /* sticky first column of table */
 .schedule-table th:first-child,
 .schedule-table td:first-child {
@@ -77,4 +118,51 @@ body, html {
     z-index: 10;
     border: 2px solid #dee2e6;
     background-color: #f8f9fa;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    left: 0%;
+    width:240px;
+    height: 120px;
+    background-color: #dee2e6;
+    border: #0d6efd solid 1px;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: left;
+}
+
+.schedule-cell:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    bottom: 125%;
+}
+
+.add-icon {
+    width:60px;
+    height:60px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    text-align: center;
+    font-size: 34px;
+    opacity: 0.5;
+    position: absolute;
+    top: 45px;
+    right: 75px;
+}
+
+
+.delete-icon {
+    top: 0px;
+    right: 0px;
+    width:30px;
+    height:30px;
+    border-radius: 50%;
+    background-color: #ff0000c4;
+    text-align: center;
+    font-size: 17px;
+    position: absolute;
+    opacity: 1;
 }

@@ -1,5 +1,6 @@
 --+PARAMS: start_date end_date group_id 
 SELECT 
+	s.id,
 	s.schedule_date,
 	s.time_slot_id,
 	sub.short_name as subject,

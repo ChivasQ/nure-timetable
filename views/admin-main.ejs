@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8">
+    <title>Адмін-панель розкладу</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css"> </head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">🔧 CIST Admin</a>
+            <a href="/" class="btn btn-outline-light btn-sm">На сайт</a>
+        </div>
+    </nav>
+
+    <div class="layout-wrapper">
+        
+        <div class="sidebar p-3">
+            <form action="/admin/" method="GET">
+                <h5 class="mb-3">Налаштування</h5>
+
+                <div class="mb-3">
+                    <label class="form-label">Дата</label>
+                    <input type="date" class="form-control" name="date" 
+                        value="<%= selectedDate %>"> 
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Група</label>
+                    <select class="form-select" name="group_id">
+                        <% groupsList.forEach(g => { %>
+                            <option value="<%= g.id %>" <%= g.id == selectedGroup ? 'selected' : '' %>>
+                                <%= g.name %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Показати</button>
+            </form>
+        </div>
+
+        <div class="main-content">
+            <div class="table-responsive h-100" id="scroll-x">
+                <table class="table table-bordered text-center align-middle schedule-table">
+                    
+                    <thead class="bg-light sticky-top">
+                        <tr>
+                            <th style="width: 80px;">Час</th>
+                            <% weekDates.forEach(date => { %>
+                                <th><%= date %></th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% timeSlots.forEach(slot => { %>
+                            <tr>
+                                <td class="time-col text-muted">
+                                    <small><%= slot.pair_number %> пара</small><br>
+                                    <strong><%= slot.start_time.slice(0,5) %></strong><br>
+                                    <small><%= slot.end_time.slice(0,5) %></small>
+                                </td>
+
+                                <% weekDates.forEach(date => { %>
+                                    <% 
+                                        const lesson = scheduleMap[date] ? scheduleMap[date][slot.id] : null; 
+                                    %>
+                                    
+                                    <td class="schedule-cell <%= lesson ? 'has-lesson' : '' %>">
+                                        <% if (lesson) { %>
+                                            <div class="lesson-card p-2 text-start
+                                              <%= lesson.type == 'Лк'? 'card-lecture' : '' %>
+                                              <%= lesson.type == 'Пз'? 'card-practical' : '' %>
+                                              <%= lesson.type == 'Лб'? 'card-laboratory' : '' %>
+                                              ">
+                                                <div class="badge mb-1 colored-badge"><%= lesson.type %></div>
+                                                <div class="fw-bold text-dark"><%= lesson.subject %></div>
+                                                <div class="small text-muted">
+                                                    📍 <%= lesson.room_number %><br>
+                                                    👤 <%= lesson.teacher %>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="delete-icon" 
+                                                 onclick="deleteLesson('<%= lesson.id %>')" 
+                                                 style="cursor: pointer;">x</div>
+
+                                        <% } else { %>
+                                            <div class="add-icon" 
+                                                 onclick="openAddModal('<%= date %>', '<%= slot.id %>')"
+                                                 style="cursor: pointer;">+</div>
+                                        <% } %>
+                                    </td>
+
+                                <% }) %> </tr>
+                        <% }) %> </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addLessonModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Додати пару</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addLessonForm">
+                        <input type="hidden" name="date" id="inputDate">
+                        <input type="hidden" name="time_slot_id" id="inputSlotId">
+                        <input type="hidden" name="group_id" value="<%= selectedGroup %>">
+
+                        <div class="mb-3">
+                            <label class="form-label">Предмет</label>
+                            <select class="form-select" name="subject_id" required>
+                                <% subjects.forEach(s => { %>
+                                    <option value="<%= s.id %>"><%= s.short_name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Тип заняття</label>
+                            <select class="form-select" name="lesson_type_id" required>
+                                <% lessonTypes.forEach(lt => { %>
+                                    <option value="<%= lt.id %>"><%= lt.short_name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Викладач</label>
+                            <select class="form-select" name="teacher_id" required>
+                                <% teachers.forEach(t => { %>
+                                    <option value="<%= t.id %>"><%= t.full_name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Аудиторія</label>
+                            <select class="form-select" name="classroom_id" required>
+                                <% classrooms.forEach(c => { %>
+                                    <option value="<%= c.id %>"><%= c.room_number %> (<%= c.building %>)</option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Відміна</button>
+                    <button type="button" class="btn btn-primary" onclick="submitAddLesson()">Зберегти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/scrollX.js"></script>
+    <script src="/js/query.js"></script>
+</body>
+</html>
