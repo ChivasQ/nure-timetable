@@ -8,7 +8,7 @@ try {
   config = JSON.parse(fileContent);
   
 } catch (error) {
-  console.error('Помилка при читані конфігу:', error);
+  console.error('failed to read config: ', error);
   return;
 }
 
@@ -24,7 +24,7 @@ connection.connect(function(err) {
         console.error(":( Sad: " + err.stack);
         return;
     }
-    console.log("Connected to db :)");
+    console.log("\x1b[32m[INFO]\x1b[0m\tConnected to sql :)");
 });
 
 function executeQuery(sqlQuery, params = []) {

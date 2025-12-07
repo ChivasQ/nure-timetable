@@ -14,5 +14,5 @@ JOIN Classrooms c ON s.classroom_id = c.id
 JOIN LessonTypes lt ON s.lesson_type_id = lt.id
 JOIN ScheduleGroups sg ON s.id = sg.schedule_id
 JOIN StudentGroups g ON sg.group_id = g.id
-WHERE s.schedule_date BETWEEN ? AND ? 
+WHERE s.schedule_date BETWEEN ? - 1 AND ? 
 AND g.id = ?

@@ -1,0 +1,1 @@
+SELECT * FROM TimeSlots ORDER BY pair_number

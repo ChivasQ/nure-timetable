@@ -1,0 +1,1 @@
+SELECT MAX(s.schedule_date) AS 'max_date' FROM Schedule s;
