@@ -74,7 +74,7 @@
                                               <%= lesson.type == 'Лк'? 'card-lecture' : '' %>
                                               <%= lesson.type == 'Пз'? 'card-practical' : '' %>
                                               <%= lesson.type == 'Лб'? 'card-laboratory' : '' %>
-                                              ">
+                                              " onclick="openEditModal('<%= lesson.id %>')" style="cursor: pointer;">
                                                 <div class="badge mb-1 colored-badge"><%= lesson.type %></div>
                                                 <div class="fw-bold text-dark"><%= lesson.subject %></div>
                                                 <div class="small text-muted">
@@ -110,6 +110,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="addLessonForm">
+                        <input type="hidden" name="id" id="inputId">
                         <input type="hidden" name="date" id="inputDate">
                         <input type="hidden" name="time_slot_id" id="inputSlotId">
                         
