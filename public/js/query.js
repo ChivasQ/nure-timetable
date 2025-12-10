@@ -21,7 +21,6 @@ document.getElementById('addLessonForm').reset(); // Очистити форму
 
 async function openEditModal(id) {
     try {
-        // Запитуємо дані з сервера
         const res = await fetch(`/admin/lesson/${id}`);
         const data = await res.json();
         
