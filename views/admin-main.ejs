@@ -112,7 +112,18 @@
                     <form id="addLessonForm">
                         <input type="hidden" name="date" id="inputDate">
                         <input type="hidden" name="time_slot_id" id="inputSlotId">
-                        <input type="hidden" name="group_id" value="<%= selectedGroup %>">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Групи</label>
+                            <select class="form-select" name="groups" multiple size="4" required>
+                                <% groupsList.forEach(g => { %>
+                                    <option value="<%= g.id %>" <%= g.id == selectedGroup ? 'selected' : '' %>>
+                                        <%= g.name %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                            <div class="form-text text-muted">Затисніть Ctrl (або Cmd), щоб вибрати декілька груп.</div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="form-label">Предмет</label>

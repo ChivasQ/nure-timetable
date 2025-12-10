@@ -67,24 +67,35 @@ const getAdminMainPage = async (req, res) => {
 };
 
 const addLesson = async (req, res) => {
-    try {
-        const { date, time_slot_id, group_id, subject_id, teacher_id, classroom_id, lesson_type_id } = req.body;
+try {
+        const { groups, ...scheduleData } = req.body;
 
-        const result = await sqlManager.run('add_schedule', {
-            date, time_slot_id, teacher_id, subject_id, classroom_id, lesson_type_id
+        if (!groups || groups.length === 0) {
+            throw new Error('Не обрано жодної групи');
+        }
+
+        const result = await sqlManager.run('add_schedule', scheduleData);
+
+        const newScheduleId = result.insertId; 
+
+        if (!newScheduleId) {
+            throw new Error('Не вдалося створити заняття (немає ID)');
+        }
+
+        const groupPromises = groups.map(groupId => {
+            return sqlManager.run('link_schedule_group', {
+                schedule_id: newScheduleId,
+                group_id: groupId
+            });
         });
 
-        const newScheduleId = result.insertId;
-
-        await sqlManager.run('link_schedule_group', {
-            schedule_id: newScheduleId,
-            group_id: group_id
-        });
+        await Promise.all(groupPromises);
 
         res.json({ success: true });
-    } catch (e) {
-        console.error("Add Error:", e);
-        res.status(500).json({ success: false, message: e.message });
+
+    } catch (err) {
+        console.error('Add Schedule Error:', err);
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 

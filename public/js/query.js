@@ -12,8 +12,19 @@ function openAddModal(date, slotId) {
 
 async function submitAddLesson() {
     const form = document.getElementById('addLessonForm');
+
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+
+    const selectGroups = form.querySelector('select[name="groups"]');
+    const selectedGroupIds = Array.from(selectGroups.selectedOptions).map(option => option.value);
+
+    if (selectedGroupIds.length === 0) {
+        alert('Будь ласка, виберіть хоча б одну групу');
+        return;
+    }
+
+    data.groups = selectedGroupIds;
 
     try {
         const res = await fetch('/admin/add', {
@@ -30,7 +41,7 @@ async function submitAddLesson() {
         }
     } catch (err) {
         console.error(err);
-        alert('Помилка');
+        alert('Помилка сервера');
     }
 }
 
