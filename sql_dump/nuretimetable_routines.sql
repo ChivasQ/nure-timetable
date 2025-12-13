@@ -18,6 +18,10 @@ USE `nuretimetable`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Dumping events for database 'nuretimetable'
+--
+
+--
 -- Dumping routines for database 'nuretimetable'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -30,4 +34,4 @@ USE `nuretimetable`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-13 16:42:07
+-- Dump completed on 2025-12-13 16:59:48

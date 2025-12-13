@@ -75,7 +75,7 @@ DELIMITER ;;
             AND classroom_id = NEW.classroom_id
         ) THEN
             SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Ця аудиторія вже зайнята в цей час!';
+            SET MESSAGE_TEXT = 'This class is occupied!';
         END IF;
     END IF;
 END */;;
@@ -94,4 +94,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-13 16:42:07
+-- Dump completed on 2025-12-13 16:59:48
