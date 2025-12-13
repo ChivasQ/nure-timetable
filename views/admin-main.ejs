@@ -10,7 +10,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">🔧 CIST Admin</a>
-            <a href="/" class="btn btn-outline-light btn-sm">На сайт</a>
+            <span>
+                <a href="/admin/stats/" class="btn btn-outline-light btn-sm me-2">До статистики</a>
+                <a href="/" class="btn btn-outline-light btn-sm">На сайт</a>
+            </span>
         </div>
     </nav>
 
@@ -105,7 +108,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Додати пару</h5>
+                    <h5 class="modal-title" id="modalTitle">Додати пару</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -123,7 +126,7 @@
                                     </option>
                                 <% }) %>
                             </select>
-                            <div class="form-text text-muted">Затисніть Ctrl (або Cmd), щоб вибрати декілька груп.</div>
+                            <div class="form-text text-muted">Затисніть Ctrl, щоб вибрати декілька груп.</div>
                         </div>
 
                         <div class="mb-3">

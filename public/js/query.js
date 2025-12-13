@@ -16,7 +16,7 @@ document.getElementById('addLessonForm').reset(); // Очистити форму
     const select = document.querySelector('select[name="groups"]');
     Array.from(select.options).forEach(opt => opt.selected = false);
     
-    lessonModal.show();
+    addModal.show();
 }
 
 async function openEditModal(id) {
@@ -52,7 +52,7 @@ async function openEditModal(id) {
             option.selected = groupIds.includes(parseInt(option.value));
         });
 
-        lessonModal.show();
+        addModal.show();
     } catch (err) {
         console.error(err);
         alert('Помилка з\'єднання');
