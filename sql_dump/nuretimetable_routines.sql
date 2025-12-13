@@ -18,32 +18,8 @@ USE `nuretimetable`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `teachers`
+-- Dumping routines for database 'nuretimetable'
 --
-
-DROP TABLE IF EXISTS `teachers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `teachers` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `full_name` varchar(255) NOT NULL,
-  `short_name` varchar(50) DEFAULT NULL,
-  `department_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_teacher_department` (`department_id`),
-  CONSTRAINT `fk_teacher_department` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `teachers`
---
-
-LOCK TABLES `teachers` WRITE;
-/*!40000 ALTER TABLE `teachers` DISABLE KEYS */;
-INSERT INTO `teachers` VALUES (1,'Оксана Олексіївна Мазурова','Мазурова О. О.',NULL),(2,'Ольга Вікторівна Калиниченко','Калиниченко О. В.',NULL),(3,'Віталій Миколайович Ляпота','Ляпота В. М.',NULL),(4,'Наталія Вікторівна Голян','Голян Н. В.',NULL),(5,'Наталія Євгенівна Русакова','Русакова Н. Є.',NULL);
-/*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

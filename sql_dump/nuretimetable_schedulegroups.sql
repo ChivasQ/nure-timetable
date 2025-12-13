@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `nuretimetable` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `nuretimetable`;
 -- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
 --
 -- Host: localhost    Database: nuretimetable
@@ -38,7 +40,7 @@ CREATE TABLE `schedulegroups` (
 
 LOCK TABLES `schedulegroups` WRITE;
 /*!40000 ALTER TABLE `schedulegroups` DISABLE KEYS */;
-INSERT INTO `schedulegroups` VALUES (4,1),(5,1),(12,1),(14,1),(15,1),(16,1),(17,1),(18,1),(20,1),(21,1),(23,1),(24,1),(4,2),(6,2),(20,2),(21,2),(23,2);
+INSERT INTO `schedulegroups` VALUES (4,1),(5,1),(12,1),(14,1),(15,1),(16,1),(17,1),(18,1),(20,1),(21,1),(23,1),(24,1),(4,2),(6,2),(20,2),(21,2),(23,2),(31,2);
 /*!40000 ALTER TABLE `schedulegroups` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-13 16:09:38
+-- Dump completed on 2025-12-13 16:42:06

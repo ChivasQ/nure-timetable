@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `nuretimetable` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `nuretimetable`;
 -- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
 --
 -- Host: localhost    Database: nuretimetable
@@ -32,7 +34,6 @@ CREATE TABLE `schedule` (
   `lesson_type_id` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_teacher_time` (`schedule_date`,`time_slot_id`,`teacher_id`),
-  UNIQUE KEY `unique_room_time` (`schedule_date`,`time_slot_id`,`classroom_id`),
   KEY `time_slot_id` (`time_slot_id`),
   KEY `teacher_id` (`teacher_id`),
   KEY `subject_id` (`subject_id`),
@@ -43,7 +44,7 @@ CREATE TABLE `schedule` (
   CONSTRAINT `schedule_ibfk_3` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE CASCADE,
   CONSTRAINT `schedule_ibfk_4` FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`id`) ON DELETE CASCADE,
   CONSTRAINT `schedule_ibfk_5` FOREIGN KEY (`lesson_type_id`) REFERENCES `lessontypes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,9 +53,37 @@ CREATE TABLE `schedule` (
 
 LOCK TABLES `schedule` WRITE;
 /*!40000 ALTER TABLE `schedule` DISABLE KEYS */;
-INSERT INTO `schedule` VALUES (4,'2025-09-06',3,1,1,1,1),(5,'2025-10-01',2,1,1,1,1),(6,'2025-12-01',2,1,1,1,1),(12,'2025-09-02',2,1,1,1,2),(14,'2025-09-05',3,1,1,1,3),(15,'2025-09-04',2,2,2,2,3),(16,'2025-09-01',3,1,1,2,1),(17,'2025-09-01',4,5,1,2,3),(18,'2025-09-01',5,5,1,2,3),(20,'2025-09-01',2,2,2,2,1),(21,'2025-09-02',3,3,4,2,3),(23,'2025-09-03',2,1,1,2,1),(24,'2025-09-02',2,4,3,2,2);
+INSERT INTO `schedule` VALUES (4,'2025-09-06',3,1,1,1,1),(5,'2025-10-01',2,1,1,1,1),(6,'2025-12-01',2,1,1,1,1),(12,'2025-09-02',2,1,1,1,2),(14,'2025-09-05',3,1,1,1,3),(15,'2025-09-04',2,2,2,2,3),(16,'2025-09-01',3,1,1,2,1),(17,'2025-09-01',4,5,1,2,3),(18,'2025-09-01',5,5,1,2,3),(20,'2025-09-01',2,2,2,2,1),(21,'2025-09-02',3,3,4,2,3),(23,'2025-09-03',2,1,1,2,1),(24,'2025-09-02',2,4,3,2,2),(31,'2025-09-02',2,5,4,2,1);
 /*!40000 ALTER TABLE `schedule` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `prevent_room_double_booking` BEFORE INSERT ON `schedule` FOR EACH ROW BEGIN
+    -- Якщо це НЕ дистанційна аудиторія, перевіряємо конфлікти:
+    IF NEW.classroom_id != 2 THEN
+        IF EXISTS (
+            SELECT 1 FROM schedule 
+            WHERE schedule_date = NEW.schedule_date 
+            AND time_slot_id = NEW.time_slot_id 
+            AND classroom_id = NEW.classroom_id
+        ) THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Ця аудиторія вже зайнята в цей час!';
+        END IF;
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -65,4 +94,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-13 16:09:38
+-- Dump completed on 2025-12-13 16:42:07
