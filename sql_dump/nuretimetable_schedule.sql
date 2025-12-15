@@ -44,7 +44,7 @@ CREATE TABLE `schedule` (
   CONSTRAINT `schedule_ibfk_3` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE CASCADE,
   CONSTRAINT `schedule_ibfk_4` FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`id`) ON DELETE CASCADE,
   CONSTRAINT `schedule_ibfk_5` FOREIGN KEY (`lesson_type_id`) REFERENCES `lessontypes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -53,7 +53,7 @@ CREATE TABLE `schedule` (
 
 LOCK TABLES `schedule` WRITE;
 /*!40000 ALTER TABLE `schedule` DISABLE KEYS */;
-INSERT INTO `schedule` VALUES (4,'2025-09-06',3,1,1,1,1),(5,'2025-10-01',2,1,1,1,1),(6,'2025-12-01',2,1,1,1,1),(12,'2025-09-02',2,1,1,1,2),(14,'2025-09-05',3,1,1,1,3),(15,'2025-09-04',2,2,2,2,3),(16,'2025-09-01',3,1,1,2,1),(17,'2025-09-01',4,5,1,2,3),(18,'2025-09-01',5,5,1,2,3),(20,'2025-09-01',2,2,2,2,1),(21,'2025-09-02',3,3,4,2,3),(23,'2025-09-03',2,1,1,2,1),(24,'2025-09-02',2,4,3,2,2),(31,'2025-09-02',2,5,4,2,1);
+INSERT INTO `schedule` VALUES (4,'2025-09-06',3,1,1,1,1),(5,'2025-10-01',2,1,1,1,1),(6,'2025-12-01',2,1,1,1,1),(12,'2025-09-02',2,1,1,1,2),(14,'2025-09-05',3,1,1,1,3),(15,'2025-09-04',2,2,2,2,3),(16,'2025-09-01',3,1,1,2,1),(17,'2025-09-01',4,5,1,2,3),(18,'2025-09-01',5,5,1,2,3),(20,'2025-09-01',2,2,2,2,1),(21,'2025-09-02',3,3,4,2,3),(23,'2025-09-03',2,1,1,2,1),(24,'2025-09-02',2,4,3,2,2),(31,'2025-09-02',2,5,4,2,1),(38,'2025-09-01',3,3,4,1,1);
 /*!40000 ALTER TABLE `schedule` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -94,4 +94,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-13 16:59:48
+-- Dump completed on 2025-12-15 23:30:07

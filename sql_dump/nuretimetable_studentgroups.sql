@@ -34,7 +34,7 @@ CREATE TABLE `studentgroups` (
   UNIQUE KEY `name` (`name`),
   KEY `fk_group_specialty` (`specialty_id`),
   CONSTRAINT `fk_group_specialty` FOREIGN KEY (`specialty_id`) REFERENCES `specialties` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `studentgroups` (
 
 LOCK TABLES `studentgroups` WRITE;
 /*!40000 ALTER TABLE `studentgroups` DISABLE KEYS */;
-INSERT INTO `studentgroups` VALUES (1,'ПЗПІ-24-6',2,19,NULL),(2,'ПЗПІ-24-5',2,42,NULL);
+INSERT INTO `studentgroups` VALUES (1,'ПЗПІ-24-6',2,19,NULL),(2,'ПЗПІ-24-5',2,42,NULL),(4,'ПЗПІ-24-7',2,70,NULL);
 /*!40000 ALTER TABLE `studentgroups` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-13 16:59:47
+-- Dump completed on 2025-12-15 23:30:08

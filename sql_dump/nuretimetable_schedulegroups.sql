@@ -40,9 +40,46 @@ CREATE TABLE `schedulegroups` (
 
 LOCK TABLES `schedulegroups` WRITE;
 /*!40000 ALTER TABLE `schedulegroups` DISABLE KEYS */;
-INSERT INTO `schedulegroups` VALUES (4,1),(5,1),(12,1),(14,1),(15,1),(16,1),(17,1),(18,1),(20,1),(21,1),(23,1),(24,1),(4,2),(6,2),(20,2),(21,2),(23,2),(31,2);
+INSERT INTO `schedulegroups` VALUES (4,1),(5,1),(12,1),(14,1),(15,1),(16,1),(17,1),(18,1),(20,1),(21,1),(23,1),(24,1),(4,2),(6,2),(20,2),(21,2),(23,2),(31,2),(38,2),(38,4);
 /*!40000 ALTER TABLE `schedulegroups` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `prevent_group_double_booking` BEFORE INSERT ON `schedulegroups` FOR EACH ROW BEGIN
+    -- Змінні для збереження дати і часу пари, до якої ми додаємо групу
+    DECLARE v_date DATE;
+    DECLARE v_slot INT;
+
+    -- Дізнаємося дату і слот поточної пари (NEW.schedule_id)
+    SELECT schedule_date, time_slot_id INTO v_date, v_slot
+    FROM schedule
+    WHERE id = NEW.schedule_id;
+
+    -- Перевіряємо, чи є NEW.group_id в інших парах на цей же час
+    IF EXISTS (
+        SELECT 1 
+        FROM schedulegroups sg
+        JOIN schedule s ON sg.schedule_id = s.id
+        WHERE sg.group_id = NEW.group_id
+          AND s.schedule_date = v_date
+          AND s.time_slot_id = v_slot
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Помилка: Ця група вже має заняття в цей час!';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -53,4 +90,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-13 16:59:48
+-- Dump completed on 2025-12-15 23:30:07
