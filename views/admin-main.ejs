@@ -119,14 +119,16 @@
                         
                         <div class="mb-3">
                             <label class="form-label">Групи</label>
-                            <select class="form-select" name="groups" multiple size="4" required>
+                            <select class="form-select" name="groups" id="groupSelect" multiple size="4" onchange="updateStudentCountInfo()" required>
                                 <% groupsList.forEach(g => { %>
-                                    <option value="<%= g.id %>" <%= g.id == selectedGroup ? 'selected' : '' %>>
-                                        <%= g.name %>
+                                    <option value="<%= g.id %>" data-students="<%= g.student_count %>">
+                                        <%= g.name %> (ст: <%= g.student_count %>)
                                     </option>
                                 <% }) %>
                             </select>
-                            <div class="form-text text-muted">Затисніть Ctrl, щоб вибрати декілька груп.</div>
+                            <div class="form-text text-muted">
+                                Обрано студентів: <span id="totalStudentsBadge" class="badge bg-secondary">0</span>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -155,12 +157,20 @@
                                 <% }) %>
                             </select>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label">Аудиторія</label>
-                            <select class="form-select" name="classroom_id" required>
+                            
+                            <div class="d-flex mb-2">
+                                <button class="btn btn-outline-primary w-100" type="button" onclick="checkRoomAvailability()">
+                                    🔄 Перевірити доступність
+                                </button>
+                            </div>
+
+                            <select class="form-select" name="classroom_id" id="classroomSelect" required>
                                 <% classrooms.forEach(c => { %>
-                                    <option value="<%= c.id %>"><%= c.room_number %> (<%= c.building %>)</option>
+                                    <option value="<%= c.id %>" data-cap="<%= c.capacity %>">
+                                        <%= c.room_number %> — <%= c.capacity == -1 ? '∞' : c.capacity %> місць
+                                    </option>
                                 <% }) %>
                             </select>
                         </div>

@@ -14,7 +14,8 @@ const mainRoutes = require('./routes/main');
 app.use('/', mainRoutes);
 const adminRoutes = require('./routes/admin');
 app.use('/admin', adminRoutes);
-
+const apiRoutes = require('./routes/api');
+app.use('/api', apiRoutes);
 
 app.listen(port, () => {
     console.log(`\x1b[32m[INFO]\x1b[0m\tServer runs at http://localhost:${port}`);

@@ -1,1 +1,1 @@
-SELECT id, name FROM StudentGroups ORDER BY name
+SELECT id, name, student_count FROM StudentGroups ORDER BY name
