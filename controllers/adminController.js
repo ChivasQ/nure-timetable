@@ -158,9 +158,76 @@ const editLesson = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, message: err.message });
+        await sqlManager.run('delete_trash');
     }
 }
+
+const getTeacherSchedulePage = async (req, res) => {
+    try {
+        let queryDate = req.query.date ? new Date(req.query.date) : new Date();
+        if (isNaN(queryDate.getTime())) queryDate = new Date();
+        queryDate.setHours(12, 0, 0, 0);
+
+        const today = new Date(queryDate);
+        const dayOfWeek = today.getDay();
+        
+        const diffToMon = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+        const monday = new Date(today);
+        monday.setDate(diffToMon);
+
+        const weekDates = [];
+        const dateDiff = 7; 
+        
+        for (let i = 0; i < dateDiff; i++) { 
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + i);
+            weekDates.push(formatDate(d));
+        }
+
+        const teachers = await sqlManager.run('get_teachers');
+        const timeSlots = await sqlManager.run('get_timeslots');
+
+        let scheduleMap = {};
+        const selectedTeacherId = req.query.teacher_id;
+
+        if (selectedTeacherId) {
+            const startDate = weekDates[0];
+            const endDate = weekDates[weekDates.length - 1];
+
+            const lessons = await sqlManager.run('get_teacher_schedule', {
+                teacher_id: selectedTeacherId,
+                start_date: startDate,
+                end_date: endDate
+            });
+
+            lessons.forEach(row => {
+                const dateKey = formatDate(row.schedule_date);
+                if (!scheduleMap[dateKey]) scheduleMap[dateKey] = {};
+                
+                scheduleMap[dateKey][row.time_slot_id] = row;
+            });
+        }
+
+        res.render("teacher_schedule", { 
+            weekDates,
+            timeSlots,
+            scheduleMap,
+            teachers,
+            
+            query: { 
+                teacher_id: selectedTeacherId,
+                date: formatDate(queryDate) 
+            }
+        });
+
+    } catch (e) {
+        console.error("Controller error:", e);
+        res.send("Error: " + e.message);
+    }
+};
+
 module.exports = {
+    getTeacherSchedulePage,
     getAdminMainPage,
     addLesson,
     deleteLesson,

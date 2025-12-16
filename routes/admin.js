@@ -31,5 +31,36 @@ router.get('/stats', async (req, res) => {
     }
 });
 
+router.get('/report', async (req, res) => {
+    try {
+        // Завантажуємо список кафедр для випадаючого списку
+        const departments = await sqlManager.run('get_departments');
+
+        let reportData = null;
+        const { department_id, start_date, end_date } = req.query;
+
+        // Якщо користувач натиснув "Сформувати"
+        if (department_id && start_date && end_date) {
+            reportData = await sqlManager.run('report_department', {
+                department_id, 
+                start_date, 
+                end_date
+            });
+        }
+
+        res.render('report', { 
+            departments, 
+            reportData, 
+            query: req.query 
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Помилка формування звіту');
+    }
+});
+
+
+router.get('/teacher-schedule', adminController.getTeacherSchedulePage);
 
 module.exports = router;

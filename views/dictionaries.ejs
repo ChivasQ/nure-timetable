@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8">
+    <title>Довідники</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">📚 Довідники</a>
+            <div>
+                <a href="/admin" class="btn btn-outline-light btn-sm">📅 До розкладу</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#teachers">👨‍🏫 Викладачі</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#subjects">📘 Предмети</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#classrooms">🚪 Аудиторії</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#groups">👥 Групи</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            
+            <div class="tab-pane fade show active" id="teachers">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card p-3">
+                            <h5>Додати викладача</h5>
+                            <form action="/admin/dictionaries/add/teacher" method="POST">
+                                <input name="full_name" class="form-control mb-2" placeholder="ПІБ" required>
+                                <button class="btn btn-primary w-100">Додати</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <% teachers.forEach(t => { %>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <%= t.full_name %>
+                                        <div>
+                                            <button class="btn btn-sm btn-warning" 
+                                                onclick="openEditModal('teacher', '<%= t.id %>', '<%= t.full_name %>', '<%= t.short_name %>')">
+                                                ✏️
+                                            </button>
+                                            <form action="/admin/dictionaries/delete/teacher/<%= t.id %>" method="POST" class="d-inline" onsubmit="return confirm('Видалити?')">
+                                                <button class="btn btn-sm btn-danger">🗑️</button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="subjects">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card p-3">
+                            <h5>Додати предмет</h5>
+                            <form action="/admin/dictionaries/add/subject" method="POST">
+                                <input name="full_name" class="form-control mb-2" placeholder="Повна назва" required>
+                                <input name="short_name" class="form-control mb-2" placeholder="Скорочено">
+                                <button class="btn btn-primary w-100">Додати</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="list-group">
+                            <% subjects.forEach(s => { %>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><%= s.full_name %> <small class="text-muted">(<%= s.short_name %>)</small></span>
+                                    <div>
+                                        <button class="btn btn-sm btn-warning" 
+                                            onclick="openEditModal('subject', '<%= s.id %>', '<%= s.full_name %>', '<%= s.short_name %>')">✏️</button>
+                                        <form action="/admin/dictionaries/delete/subject/<%= s.id %>" method="POST" class="d-inline" onsubmit="return confirm('Видалити?')">
+                                            <button class="btn btn-sm btn-danger">🗑️</button>
+                                        </form>
+                                    </div>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="classrooms">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card p-3">
+                            <h5>Додати аудиторію</h5>
+                            <form action="/admin/dictionaries/add/classroom" method="POST">
+                                <input name="room_number" class="form-control mb-2" placeholder="Номер (напр. 305)" required>
+                                <input name="building" class="form-control mb-2" placeholder="Корпус" required>
+                                <input name="capacity" type="number" class="form-control mb-2" placeholder="Місць (-1 для DL)" required>
+                                <button class="btn btn-primary w-100">Додати</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="list-group">
+                            <% classrooms.forEach(c => { %>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>🚪 <%= c.room_number %> (<%= c.building %>) — <%= c.capacity %> місць</span>
+                                    <div>
+                                        <button class="btn btn-sm btn-warning" 
+                                            onclick="openEditModal('classroom', '<%= c.id %>', '<%= c.room_number %>', '<%= c.building %>', '<%= c.capacity %>')">✏️</button>
+                                        <form action="/admin/dictionaries/delete/classroom/<%= c.id %>" method="POST" class="d-inline" onsubmit="return confirm('Видалити?')">
+                                            <button class="btn btn-sm btn-danger">🗑️</button>
+                                        </form>
+                                    </div>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="groups">
+                 <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card p-3">
+                            <h5>Додати групу</h5>
+                            <form action="/admin/dictionaries/add/group" method="POST">
+                                <input name="name" class="form-control mb-2" placeholder="Назва (ПЗПІ-24-6)" required>
+                                <input name="student_count" type="number" class="form-control mb-2" placeholder="К-сть студентів" required>
+                                <button class="btn btn-primary w-100">Додати</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="list-group">
+                            <% groups.forEach(g => { %>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>🎓 <%= g.name %> (ст: <%= g.student_count %>)</span>
+                                    <div>
+                                        <button class="btn btn-sm btn-warning" 
+                                            onclick="openEditModal('group', '<%= g.id %>', '<%= g.name %>', '<%= g.student_count %>')">✏️</button>
+                                        <form action="/admin/dictionaries/delete/group/<%= g.id %>" method="POST" class="d-inline" onsubmit="return confirm('Видалити?')">
+                                            <button class="btn btn-sm btn-danger">🗑️</button>
+                                        </form>
+                                    </div>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редагування</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" method="POST">
+                        <input type="hidden" name="id" id="editId">
+                        
+                        <div id="editFields"></div>
+
+                        <div class="mt-3 text-end">
+                            <button type="submit" class="btn btn-success">Зберегти</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Проста функція для відкриття модалки і підстановки полів
+        function openEditModal(type, id, p1, p2, p3) {
+            const form = document.getElementById('editForm');
+            const fieldsDiv = document.getElementById('editFields');
+            const editId = document.getElementById('editId');
+            
+            // Встановлюємо правильний Action URL
+            form.action = `/admin/dictionaries/edit/${type}`;
+            editId.value = id;
+            fieldsDiv.innerHTML = ''; // Очистити старі поля
+
+            if (type === 'teacher') {
+                fieldsDiv.innerHTML = `
+                    <label class="form-label">ПІБ (Повне)</label>
+                    <input name="full_name" class="form-control mb-2" value="${p1}" required>
+                    
+                    <label class="form-label">Скорочено (для розкладу)</label>
+                    <input name="short_name" class="form-control" value="${p2}" required>
+                `;
+            }
+            else if (type === 'subject') {
+                fieldsDiv.innerHTML = `
+                    <label>Повна назва</label>
+                    <input name="full_name" class="form-control mb-2" value="${p1}" required>
+                    <label>Скорочено</label>
+                    <input name="short_name" class="form-control" value="${p2}">
+                `;
+            }
+            else if (type === 'classroom') {
+                fieldsDiv.innerHTML = `
+                    <label>Номер</label>
+                    <input name="room_number" class="form-control mb-2" value="${p1}" required>
+                    <label>Корпус</label>
+                    <input name="building" class="form-control mb-2" value="${p2}" required>
+                    <label>Місць</label>
+                    <input type="number" name="capacity" class="form-control" value="${p3}" required>
+                `;
+            }
+            else if (type === 'group') {
+                fieldsDiv.innerHTML = `
+                    <label>Назва</label>
+                    <input name="name" class="form-control mb-2" value="${p1}" required>
+                    <label>Студентів</label>
+                    <input type="number" name="student_count" class="form-control" value="${p2}" required>
+                `;
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('editModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

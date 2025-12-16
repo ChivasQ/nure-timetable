@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8">
+    <title>Розклад Викладача</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        /* Стиль для друку */
+        @media print {
+            .sidebar, .navbar { display: none !important; }
+            .layout-wrapper { grid-template-columns: 1fr; }
+            .main-content { padding: 0; }
+            .table { font-size: 12px; }
+            .lesson-card { border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">🎓 CIST: Викладач</a>
+            <div class="d-flex">
+                <a href="/admin" class="btn btn-outline-light btn-sm me-2">До розкладу</a>
+                <a href="/" class="btn btn-outline-light btn-sm">На сайт</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="layout-wrapper">
+        
+        <div class="sidebar p-3">
+            <form action="/admin/teacher-schedule" method="GET">
+                <h5 class="mb-3">Налаштування</h5>
+
+                <div class="mb-3">
+                    <label class="form-label">Дата</label>
+                    <input type="date" class="form-control" name="date" 
+                        value="<%= query.date %>"> 
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Викладач</label>
+                    <select class="form-select" name="teacher_id">
+                        <option value="" disabled selected>-- Оберіть --</option>
+                        <% teachers.forEach(t => { %>
+                            <option value="<%= t.id %>" <%= t.id == query.teacher_id ? 'selected' : '' %>>
+                                <%= t.full_name %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Показати</button>
+                    <% if (query.teacher_id) { %>
+                        <button type="button" onclick="window.print()" class="btn btn-success">🖨️ Друк</button>
+                    <% } %>
+                </div>
+            </form>
+        </div>
+
+        <div class="main-content">
+            <div class="table-responsive h-100" id="scroll-x">
+                
+                <% if (!query.teacher_id) { %>
+                    <div class="d-flex justify-content-center align-items-center h-100 text-muted">
+                        <h4>⬅ Оберіть викладача зі списку</h4>
+                    </div>
+                <% } else { %>
+                
+                <table class="table table-bordered text-center align-middle schedule-table">
+                    <thead class="bg-light sticky-top">
+                        <tr>
+                            <th style="width: 80px;">Час</th>
+                            <% weekDates.forEach(date => { %>
+                                <th>
+                                    <%= date.split('-').slice(1).reverse().join('.') %>
+                                </th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% 
+                           const skipMap = {}; 
+                        %>
+
+                        <% timeSlots.forEach((slot, slotIndex) => { %>
+                            <tr>
+                                <td class="time-col text-muted">
+                                    <small><%= slot.pair_number %> пара</small><br>
+                                    <strong><%= slot.start_time.slice(0,5) %></strong><br>
+                                    <small><%= slot.end_time.slice(0,5) %></small>
+                                </td>
+
+                                <% weekDates.forEach(date => { %>
+                                    <% 
+                                        const cellKey = date + '_' + slot.id;
+
+                                        if (skipMap[cellKey]) return;
+
+                                        // Беремо урок з мапи (зверніть увагу: ми передаємо scheduleMap з бекенду)
+                                        const lesson = scheduleMap[date] ? scheduleMap[date][slot.id] : null; 
+                                        
+                                        let rowspan = 1;
+
+                                        if (lesson) {
+                                            for (let i = slotIndex + 1; i < timeSlots.length; i++) {
+                                                const nextSlot = timeSlots[i];
+                                                const nextLesson = scheduleMap[date] ? scheduleMap[date][nextSlot.id] : null;
+
+                                                if (nextLesson && 
+                                                    nextLesson.subject === lesson.subject && 
+                                                    nextLesson.type === lesson.type &&
+                                                    nextLesson.room_number === lesson.room_number
+                                                    ) {
+                                                    
+                                                    rowspan++;
+                                                    skipMap[date + '_' + nextSlot.id] = true;
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    %>
+                                    
+                                    <td rowspan="<%= rowspan %>" class="schedule-cell <%= lesson ? 'has-lesson' : '' %>">
+                                        <% if (lesson) { %>
+                                            <div class="lesson-card p-2 text-start
+                                                <%= lesson.type == 'Лк'? 'card-lecture' : '' %>
+                                                <%= lesson.type == 'Пз'? 'card-practical' : '' %>
+                                                <%= lesson.type == 'Лб'? 'card-laboratory' : '' %>"
+                                                style='height: <%= rowspan==1 ? 120 : rowspan * 130 %>px'>          
+                                                
+                                                <div class="badge mb-1 colored-badge"><%= lesson.type %></div>
+                                                <div class="fw-bold text-dark"><%= lesson.subject %></div>
+                                                
+                                                <div class="small text-muted mt-1">
+                                                    📍 <%= lesson.room_number %> (<%= lesson.building %>)<br>
+                                                    👥 <strong><%= lesson.group_names %></strong>
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    </td>
+
+                                <% }) %>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table> 
+                <% } %>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/scrollX.js"></script>
+</body>
+</html>
