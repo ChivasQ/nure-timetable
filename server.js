@@ -18,37 +18,76 @@ app.use('/admin', adminRoutes);
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
 
-// 1. Сторінка довідників
 app.get('/admin/dictionaries', async (req, res) => {
     try {
-        const [teachers, subjects, classrooms, groups] = await Promise.all([
-            sqlManager.run('get_teachers'),   // SELECT * FROM teachers ORDER BY full_name
-            sqlManager.run('get_subjects'),   // SELECT * FROM subjects ORDER BY full_name
-            sqlManager.run('get_classrooms'), // SELECT * FROM classrooms ORDER BY room_number
-            sqlManager.run('get_groups')      // SELECT * FROM studentgroups ORDER BY name
-        ]);
+        const { 
+            teacher_search,
+            room_min, room_max,
+            room_building,
+            group_sort
+        } = req.query;
 
-        res.render('dictionaries', { teachers, subjects, classrooms, groups });
+        // Пошук для ВЧИТЕЛІВ
+        let teachers;
+        if (teacher_search) {
+            teachers = await sqlManager.run('search_teachers', { search_query: teacher_search });
+        } else {
+            teachers = await sqlManager.run('get_teachers');
+        }
+
+        // фільтрація для АУДИТОРІЙ
+        const minCap = room_min ? parseInt(room_min) : 0;
+        const maxCap = room_max ? parseInt(room_max) : 9999;
+        const buildFilter = room_building || '';
+        
+        const classrooms = await sqlManager.run('filter_classrooms', {
+            min_cap: minCap,
+            max_cap: maxCap,
+            building: buildFilter
+        });
+        
+        const allRooms = await sqlManager.run('get_classrooms');
+        const buildings = [...new Set(allRooms.map(r => r.building))]; 
+
+
+        // сортування для ГРУП
+        let groups = await sqlManager.run('get_groups');
+        
+        if (group_sort === 'name_asc') {
+            groups.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (group_sort === 'name_desc') {
+            groups.sort((a, b) => b.name.localeCompare(a.name));
+        } else if (group_sort === 'students_desc') {
+            groups.sort((a, b) => b.student_count - a.student_count);
+        }
+
+        const subjects = await sqlManager.run('get_subjects');
+
+        res.render('dictionaries', { 
+            teachers, 
+            subjects, 
+            classrooms, 
+            groups, 
+            buildings,
+            query: req.query
+        });
+
     } catch (err) {
         console.error(err);
-        res.status(500).send('Помилка завантаження довідників');
+        res.status(500).send('Помилка завантаження довідників: ' + err.message);
     }
 });
 
-// --- ДОПОМІЖНА ФУНКЦІЯ (Додайте це десь зверху файлу або перед роутами) ---
+
 function generateShortName(fullName) {
     if (!fullName) return '';
-    // Розбиваємо "Мазурова Оксана Олексіївна" на масив слів
     const parts = fullName.trim().split(/\s+/);
     
     if (parts.length >= 3) {
-        // Якщо є Прізвище Ім'я По-батькові -> "Прізвище І. П."
         return `${parts[0]} ${parts[1][0]}. ${parts[2][0]}.`;
     } else if (parts.length === 2) {
-        // Якщо тільки Прізвище Ім'я -> "Прізвище І."
         return `${parts[0]} ${parts[1][0]}.`;
     } else {
-        // Якщо одне слово -> залишаємо як є
         return fullName;
     }
 }
@@ -155,7 +194,10 @@ app.post('/admin/dictionaries/delete/:type/:id', async (req, res) => {
         res.redirect('/admin/dictionaries');
     } catch (err) {
         console.error(err);
-        res.send(`<script>alert('Неможливо видалити: цей запис використовується у розкладі!'); window.location.href='/admin/dictionaries';</script>`);
+        res.send(`<script>
+                    alert('Неможливо видалити: цей запис використовується у розкладі!'); 
+                    window.location.href='/admin/dictionaries';
+                  </script>`);
     }
 });
 

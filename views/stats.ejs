@@ -67,6 +67,84 @@
                 </div>
             </div>
         </div>
+
+        <div class="card shadow-sm mb-4 border-primary mt-5">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary">🏢 Деталізація по кафедрі</h5>
+            </div>
+            <div class="card-body">
+                <form action="/admin/stats" method="GET" class="row g-3 align-items-end mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label text-muted">Оберіть кафедру:</label>
+                        <select name="dept_id" class="form-select" onchange="this.form.submit()">
+                            <option value="" selected disabled>-- Оберіть зі списку --</option>
+                            <% if (typeof departments !== 'undefined') { %>
+                                <% departments.forEach(d => { %>
+                                    <option value="<%= d.id %>" <%= selectedDeptId == d.id ? 'selected' : '' %>>
+                                        <%= d.full_name %>
+                                    </option>
+                                <% }) %>
+                            <% } %>
+                        </select>
+                    </div>
+                </form>
+
+                <% if (deptStats && deptStats.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered align-middle text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-start">Викладач</th>
+                                    <th>Лекції 🎤</th>
+                                    <th>Практики 📝</th>
+                                    <th>Лаби 🔬</th>
+                                    <th class="fw-bold">Всього пар 📊</th>
+                                    <th>Навантаження</th> </tr>
+                            </thead>
+                            <tbody>
+                                <% deptStats.forEach(row => { %>
+                                    <tr>
+                                        <td class="text-start fw-semibold"><%= row.full_name %></td>
+                                        
+                                        <td class="<%= row.lecs > 0 ? 'table-primary' : 'text-muted opacity-25' %>">
+                                            <%= row.lecs %>
+                                        </td>
+                                        
+                                        <td class="<%= row.pracs > 0 ? 'table-success' : 'text-muted opacity-25' %>">
+                                            <%= row.pracs %>
+                                        </td>
+                                        
+                                        <td class="<%= row.labs > 0 ? 'table-warning' : 'text-muted opacity-25' %>">
+                                            <%= row.labs %>
+                                        </td>
+                                        
+                                        <td class="fw-bold fs-5"><%= row.total %></td>
+                                        
+                                        <td style="width: 20%;">
+                                            <% 
+                                                // Простий розрахунок відсотка відносно "норми" (наприклад, 20 пар - це 100% для візуалізації)
+                                                const percent = Math.min((row.total / 20) * 100, 100);
+                                                let color = 'bg-success';
+                                                if(row.total > 15) color = 'bg-warning'; 
+                                                if(row.total > 25) color = 'bg-danger'; 
+                                            %>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar <%= color %>" role="progressbar" style="width: <%= percent %>%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else if (selectedDeptId) { %>
+                    <div class="alert alert-info text-center">
+                        У цієї кафедри поки немає запланованих занять.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

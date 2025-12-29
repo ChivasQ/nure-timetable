@@ -1,1 +1,1 @@
-SELECT * FROM departments ORDER BY short_name;
+SELECT * FROM departments ORDER BY full_name;

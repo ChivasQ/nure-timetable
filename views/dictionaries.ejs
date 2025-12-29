@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="utf-8">
-    <title>Довідники</title>
+    <title>Довідники (Лаб 5)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/main.css">
 </head>
@@ -17,20 +17,20 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container pb-5">
         
         <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
             <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#teachers">👨‍🏫 Викладачі</button>
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#teachers" type="button">👨‍🏫 Викладачі</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#subjects">📘 Предмети</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#subjects" type="button">📘 Предмети</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#classrooms">🚪 Аудиторії</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#classrooms" type="button">🚪 Аудиторії</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#groups">👥 Групи</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#groups" type="button">👥 Групи</button>
             </li>
         </ul>
 
@@ -39,7 +39,7 @@
             <div class="tab-pane fade show active" id="teachers">
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <div class="card p-3">
+                        <div class="card p-3 shadow-sm">
                             <h5>Додати викладача</h5>
                             <form action="/admin/dictionaries/add/teacher" method="POST">
                                 <input name="full_name" class="form-control mb-2" placeholder="ПІБ" required>
@@ -48,7 +48,19 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <div class="card">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white p-3">
+                                <form action="/admin/dictionaries" method="GET" class="d-flex gap-2">
+                                    <input type="text" name="teacher_search" class="form-control" 
+                                           placeholder="🔍 Пошук за прізвищем..." 
+                                           value="<%= query.teacher_search || '' %>">
+                                    <button class="btn btn-outline-primary" type="submit">Знайти</button>
+                                    <% if(query.teacher_search) { %>
+                                        <a href="/admin/dictionaries" class="btn btn-outline-secondary" title="Скинути пошук">❌</a>
+                                    <% } %>
+                                </form>
+                            </div>
+
                             <ul class="list-group list-group-flush">
                                 <% teachers.forEach(t => { %>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -64,6 +76,9 @@
                                         </div>
                                     </li>
                                 <% }) %>
+                                <% if(teachers.length === 0) { %>
+                                    <li class="list-group-item text-center text-muted py-4">Нічого не знайдено 🕵️‍♂️</li>
+                                <% } %>
                             </ul>
                         </div>
                     </div>
@@ -73,7 +88,7 @@
             <div class="tab-pane fade" id="subjects">
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <div class="card p-3">
+                        <div class="card p-3 shadow-sm">
                             <h5>Додати предмет</h5>
                             <form action="/admin/dictionaries/add/subject" method="POST">
                                 <input name="full_name" class="form-control mb-2" placeholder="Повна назва" required>
@@ -83,7 +98,7 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <ul class="list-group">
+                        <ul class="list-group shadow-sm">
                             <% subjects.forEach(s => { %>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span><%= s.full_name %> <small class="text-muted">(<%= s.short_name %>)</small></span>
@@ -104,7 +119,7 @@
             <div class="tab-pane fade" id="classrooms">
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <div class="card p-3">
+                        <div class="card p-3 mb-3 shadow-sm">
                             <h5>Додати аудиторію</h5>
                             <form action="/admin/dictionaries/add/classroom" method="POST">
                                 <input name="room_number" class="form-control mb-2" placeholder="Номер (напр. 305)" required>
@@ -113,12 +128,44 @@
                                 <button class="btn btn-primary w-100">Додати</button>
                             </form>
                         </div>
+
+                        <div class="card p-3 border-info shadow-sm bg-white">
+                            <h6 class="text-info border-bottom pb-2 mb-3">🛠 Фільтрація списку</h6>
+                            <form action="/admin/dictionaries" method="GET">
+                                
+                                <label class="form-label small text-muted mb-1">Діапазон місткості</label>
+                                <div class="input-group mb-3">
+                                    <input type="number" name="room_min" class="form-control form-control-sm" placeholder="Від" value="<%= query.room_min %>">
+                                    <span class="input-group-text bg-light">-</span>
+                                    <input type="number" name="room_max" class="form-control form-control-sm" placeholder="До" value="<%= query.room_max %>">
+                                </div>
+
+                                <label class="form-label small text-muted mb-1">Корпус</label>
+                                <select name="room_building" class="form-select form-select-sm mb-3">
+                                    <option value="">-- Всі корпуси --</option>
+                                    <% if(typeof buildings !== 'undefined') { %>
+                                        <% buildings.forEach(b => { %>
+                                            <option value="<%= b %>" <%= query.room_building === b ? 'selected' : '' %>><%= b %></option>
+                                        <% }) %>
+                                    <% } %>
+                                </select>
+
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-info btn-sm text-white">Застосувати фільтр</button>
+                                    <a href="/admin/dictionaries" class="btn btn-outline-secondary btn-sm">Скинути всі фільтри</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
+
                     <div class="col-md-8">
-                        <ul class="list-group">
+                        <div class="alert alert-secondary py-2 d-flex justify-content-between align-items-center">
+                            <span>Знайдено записів: <strong><%= classrooms.length %></strong></span>
+                        </div>
+                        <ul class="list-group shadow-sm">
                             <% classrooms.forEach(c => { %>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>🚪 <%= c.room_number %> (<%= c.building %>) — <%= c.capacity %> місць</span>
+                                    <span>🚪 <strong><%= c.room_number %></strong> (<%= c.building %>) — <span class="badge bg-light text-dark border"><%= c.capacity == -1 ? '∞' : c.capacity %> місць</span></span>
                                     <div>
                                         <button class="btn btn-sm btn-warning" 
                                             onclick="openEditModal('classroom', '<%= c.id %>', '<%= c.room_number %>', '<%= c.building %>', '<%= c.capacity %>')">✏️</button>
@@ -136,7 +183,7 @@
             <div class="tab-pane fade" id="groups">
                  <div class="row">
                     <div class="col-md-4 mb-3">
-                        <div class="card p-3">
+                        <div class="card p-3 shadow-sm">
                             <h5>Додати групу</h5>
                             <form action="/admin/dictionaries/add/group" method="POST">
                                 <input name="name" class="form-control mb-2" placeholder="Назва (ПЗПІ-24-6)" required>
@@ -146,20 +193,34 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <ul class="list-group">
-                            <% groups.forEach(g => { %>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>🎓 <%= g.name %> (ст: <%= g.student_count %>)</span>
-                                    <div>
-                                        <button class="btn btn-sm btn-warning" 
-                                            onclick="openEditModal('group', '<%= g.id %>', '<%= g.name %>', '<%= g.student_count %>')">✏️</button>
-                                        <form action="/admin/dictionaries/delete/group/<%= g.id %>" method="POST" class="d-inline" onsubmit="return confirm('Видалити?')">
-                                            <button class="btn btn-sm btn-danger">🗑️</button>
-                                        </form>
-                                    </div>
-                                </li>
-                            <% }) %>
-                        </ul>
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
+                                <span class="text-muted fw-bold small">Сортування:</span>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="/admin/dictionaries?group_sort=name_asc" 
+                                       class="btn btn-outline-secondary <%= query.group_sort=='name_asc'?'active':'' %>">А-Я</a>
+                                    <a href="/admin/dictionaries?group_sort=name_desc" 
+                                       class="btn btn-outline-secondary <%= query.group_sort=='name_desc'?'active':'' %>">Я-А</a>
+                                    <a href="/admin/dictionaries?group_sort=students_desc" 
+                                       class="btn btn-outline-secondary <%= query.group_sort=='students_desc'?'active':'' %>">За к-стю студентів</a>
+                                </div>
+                            </div>
+
+                            <ul class="list-group list-group-flush">
+                                <% groups.forEach(g => { %>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>🎓 <strong><%= g.name %></strong> <span class="badge bg-primary rounded-pill ms-2"><%= g.student_count %> студ.</span></span>
+                                        <div>
+                                            <button class="btn btn-sm btn-warning" 
+                                                onclick="openEditModal('group', '<%= g.id %>', '<%= g.name %>', '<%= g.student_count %>')">✏️</button>
+                                            <form action="/admin/dictionaries/delete/group/<%= g.id %>" method="POST" class="d-inline" onsubmit="return confirm('Видалити?')">
+                                                <button class="btn btn-sm btn-danger">🗑️</button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -171,17 +232,19 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Редагування</h5>
+                    <h5 class="modal-title">Редагування запису</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editForm" method="POST">
                         <input type="hidden" name="id" id="editId">
                         
-                        <div id="editFields"></div>
+                        <div id="editFields">
+                            </div>
 
                         <div class="mt-3 text-end">
-                            <button type="submit" class="btn btn-success">Зберегти</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Відміна</button>
+                            <button type="submit" class="btn btn-success">Зберегти зміни</button>
                         </div>
                     </form>
                 </div>
@@ -191,16 +254,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Проста функція для відкриття модалки і підстановки полів
         function openEditModal(type, id, p1, p2, p3) {
             const form = document.getElementById('editForm');
             const fieldsDiv = document.getElementById('editFields');
             const editId = document.getElementById('editId');
             
-            // Встановлюємо правильний Action URL
             form.action = `/admin/dictionaries/edit/${type}`;
             editId.value = id;
-            fieldsDiv.innerHTML = ''; // Очистити старі поля
+            fieldsDiv.innerHTML = '';
 
             if (type === 'teacher') {
                 fieldsDiv.innerHTML = `
@@ -241,6 +302,25 @@
             const modal = new bootstrap.Modal(document.getElementById('editModal'));
             modal.show();
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let activeTab = '#teachers';
+
+            if (urlParams.has('room_min') || urlParams.has('room_building') || urlParams.has('room_max')) {
+                activeTab = '#classrooms';
+            } else if (urlParams.has('group_sort')) {
+                activeTab = '#groups';
+            } else if (urlParams.has('teacher_search')) {
+                activeTab = '#teachers';
+            }
+
+            const triggerEl = document.querySelector(`button[data-bs-target="${activeTab}"]`);
+            if(triggerEl) {
+                const tab = new bootstrap.Tab(triggerEl);
+                tab.show();
+            }
+        });
     </script>
 </body>
 </html>
