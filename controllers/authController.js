@@ -29,6 +29,11 @@ const register = async (req, res) => {
     }
 };
 
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+}
+
 const login = async (req, res) => {
     const { username, password } = req.body;
     // console.log(`Login attempt for user: ${username}`); muhehe

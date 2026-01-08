@@ -14,10 +14,10 @@
             <div class="alert alert-danger p-2"><%= error %></div>
         <% } %>
 
-        <form action="/auth/login" method="POST">
+        <form action="/auth/login" method="POST" class="needs-validation" novalidate>
             <div class="mb-3">
-                <label>Логін</label>
-                <input type="text" name="username" class="form-control" required>
+                <label>Логін <i>(E-mail)</i></label>
+                <input type="email" name="username" class="form-control" placeholder="example@nure.ua" required>
             </div>
             <div class="mb-3">
                 <label>Пароль</label>
@@ -26,9 +26,27 @@
             <button type="submit" class="btn btn-primary w-100">Увійти</button>
         </form>
         <div class="text-center mt-3">
-            <a href="/auth/register">Реєстрація</a> | <a href="/">На головну</a>
+            <a href="/">На головну</a>
         </div>
     </div>
-
+    <script>
+        (function () {
+        'use strict'
+        
+        var forms = document.querySelectorAll('.needs-validation')
+        
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+                }
+        
+                form.classList.add('was-validated')
+            }, false)
+            })
+        })()
+    </script>
 </body>
 </html>

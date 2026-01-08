@@ -58,13 +58,18 @@ const getMainPage = async (req, res) => {
             scheduleMap[dateKey][row.time_slot_id] = row;
         });
 
+        const notifications = await sqlManager.run('get_recent_notifications', {
+            group_id: selectedGroupId
+        });
+
         res.render("main", { 
             weekDates, 
             timeSlots, 
             scheduleMap,
             groupsList,
             selectedGroup: selectedGroupId,
-            selectedDate: formatDate(queryDate)
+            selectedDate: formatDate(queryDate),
+            notifications: notifications
         });
 
     } catch (e) {

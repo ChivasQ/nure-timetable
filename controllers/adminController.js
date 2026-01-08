@@ -109,6 +109,17 @@ const addLesson = async (req, res) => {
         });
 
         await Promise.all(groupPromises);
+        console.log('scheduleData:', scheduleData);
+        const msg = `📅 Зміни в розкладі! Додано пару на ${scheduleData.date}. Перевірте розклад.`;
+        
+        // Для кожної групи, яку торкнулася зміна, створюємо запис
+        const notifyPromises = groups.map(groupId => {
+            return sqlManager.run('add_notification', {
+                group_id: groupId,
+                message: msg
+            });
+        });
+        await Promise.all(notifyPromises);
 
         res.json({ success: true });
 
