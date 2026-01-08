@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sqlManager = require('./utils/SqlManager');
 let process = require('process');
+const session = require('express-session');
 
 const app = express();
 const port = 3000;
@@ -10,6 +11,18 @@ app.set("view engine", "ejs");
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+app.use(session({
+    secret: '2C76t5ZP4bhZ2KBXBX7QR3ghD7QNTuFV7gjmJNdRbkwbFG7ZXfYFGNtJMBqWk7cgG6MrM9TYFWvUgNCNjKUFYuTQnrCc2VatVUJSUvsCaxAdk55vjRp3XAj3JvxC5R8ZyEz7Z6rRqhNceeqfQT5uKQa7j95c29ma',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 24 * 60 * 60 * 1000 } // Сесія живе 24 години
+}));
+
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
 
 const mainRoutes = require('./routes/main');
 app.use('/', mainRoutes);
