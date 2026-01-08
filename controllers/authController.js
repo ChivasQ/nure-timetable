@@ -31,9 +31,11 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     const { username, password } = req.body;
-
+    // console.log(`Login attempt for user: ${username}`); muhehe
+    // console.log(`Login attempt password: ${password}`); muhehehe
+    
     try {
-        const users = await sqlManager.run('auth_find_user', { username });
+        const users = await sqlManager.run('auth_find_user', { email: username });
         const user = users[0];
 
         if (!user) {

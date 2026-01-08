@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const sqlManager = require('./utils/SqlManager');
 let process = require('process');
 const session = require('express-session');
+const isAuthenticated = require('./middleware/authMiddleware');
+
 
 const app = express();
 const port = 3000;
@@ -27,9 +29,12 @@ app.use((req, res, next) => {
 const mainRoutes = require('./routes/main');
 app.use('/', mainRoutes);
 const adminRoutes = require('./routes/admin');
-app.use('/admin', adminRoutes);
+app.use('/admin', isAuthenticated, adminRoutes);
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
+const authRoutes = require('./routes/auth');
+app.use('/auth', authRoutes);
+
 
 app.get('/admin/dictionaries', async (req, res) => {
     try {
@@ -42,7 +47,7 @@ app.get('/admin/dictionaries', async (req, res) => {
 
         // Пошук для ВЧИТЕЛІВ
         let teachers;
-        if (teacher_search) {
+        if (teacher_search) { 
             teachers = await sqlManager.run('search_teachers', { search_query: teacher_search });
         } else {
             teachers = await sqlManager.run('get_teachers');

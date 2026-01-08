@@ -1,2 +1,2 @@
---+PARAMS: username
-SELECT * FROM users WHERE username = ?;
+--+PARAMS: email
+SELECT * FROM users WHERE email = ?;

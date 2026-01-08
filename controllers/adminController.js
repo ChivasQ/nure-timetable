@@ -1,4 +1,5 @@
 const sqlManager = require('../utils/SqlManager');
+const bcrypt = require('bcrypt');
 
 function formatDate(dateInput) {
     const d = new Date(dateInput);
@@ -226,11 +227,42 @@ const getTeacherSchedulePage = async (req, res) => {
     }
 };
 
+const getAddUserPage = (req, res) => {
+    res.render('admin-register', { 
+        error: null,
+        user: req.session.user
+    });
+};
+
+const addUser = async (req, res) => {
+    const { username, email, password } = req.body;
+    
+    try {
+        // Хешуємо пароль
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        await sqlManager.run('auth_register', {
+            username,
+            email,
+            password_hash: hashedPassword
+        });
+
+        res.redirect('/admin'); 
+    } catch (err) {
+        console.error(err);
+        res.render('admin-register', { 
+            error: 'Помилка: користувач з таким логіном або поштою вже існує',
+            user: req.session.user
+        });
+    }
+};
 module.exports = {
     getTeacherSchedulePage,
     getAdminMainPage,
     addLesson,
     deleteLesson,
     getLessonById,
-    editLesson
+    editLesson,
+    getAddUserPage,
+    addUser
 };

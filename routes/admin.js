@@ -69,6 +69,8 @@ router.get('/report', async (req, res) => {
     }
 });
 
+router.get('/users/add', adminController.getAddUserPage); 
+router.post('/users/add', adminController.addUser);
 
 router.get('/teacher-schedule', adminController.getTeacherSchedulePage);
 
