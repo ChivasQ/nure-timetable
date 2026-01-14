@@ -4,19 +4,43 @@ document.addEventListener('DOMContentLoaded', function() {
     addModal = new bootstrap.Modal(document.getElementById('addLessonModal'));
 });
 
-function openAddModal(date, slotId) {
-document.getElementById('addLessonForm').reset(); // Очистити форму
-    document.getElementById('inputId').value = ''; // ID пустий = це додавання
+async function openAddModal(date, slotId) {
+    document.getElementById('addLessonForm').reset(); 
+    document.getElementById('inputId').value = ''; 
     document.getElementById('modalTitle').innerText = 'Додати пару';
     
     document.getElementById('inputDate').value = date;
     document.getElementById('inputSlotId').value = slotId;
     
-    // Скидаємо виділення груп
-    const select = document.querySelector('select[name="groups"]');
-    Array.from(select.options).forEach(opt => opt.selected = false);
+    const groupSelect = document.getElementById('groupSelect');
+    groupSelect.innerHTML = '<option disabled>⏳</option>';
     
     addModal.show();
+
+    try {
+        const response = await fetch(`/api/free-groups?date=${date}&slot_id=${slotId}`);
+        const data = await response.json();
+
+        groupSelect.innerHTML = '';
+
+        if (data.success && data.groups.length > 0) {
+            data.groups.forEach(g => {
+                const option = document.createElement('option');
+                option.value = g.id;
+                option.setAttribute('data-students', g.student_count); 
+                option.text = `${g.name} (ст: ${g.student_count})`;
+                groupSelect.appendChild(option);
+            });
+        } else {
+            groupSelect.innerHTML = '<option disabled>Немає вільних груп 😔</option>';
+        }
+        
+        updateStudentCountInfo(); 
+
+    } catch (err) {
+        console.error(err);
+        groupSelect.innerHTML = '<option disabled>Помилка завантаження</option>';
+    }
 }
 
 async function openEditModal(id) {

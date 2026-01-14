@@ -18,28 +18,34 @@ USE `nuretimetable`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `lessontypes`
+-- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `lessontypes`;
+DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `lessontypes` (
+CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `type_name` varchar(50) NOT NULL,
-  `short_name` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `reg_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `last_login` datetime DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lessontypes`
+-- Dumping data for table `users`
 --
 
-LOCK TABLES `lessontypes` WRITE;
-/*!40000 ALTER TABLE `lessontypes` DISABLE KEYS */;
-INSERT INTO `lessontypes` VALUES (1,'Лекція','Лк'),(2,'Практичнв','Пз'),(3,'Лабораторна','Лб'),(4,'Екзамен','Екз');
-/*!40000 ALTER TABLE `lessontypes` ENABLE KEYS */;
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'Oleksandr','oleksandr.kulinich@nure.ua','$2b$10$2KR717q/83Ss.I/B9C.GlO5zUM8HKYDVGdl5Hxubj.ChS88CnmHK6','2026-01-08 16:12:34',NULL,1);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

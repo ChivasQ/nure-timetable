@@ -38,5 +38,24 @@ router.get('/check-rooms', async (req, res) => {
     }
 });
 
+router.get('/free-groups', async (req, res) => {
+    try {
+        const { date, slot_id } = req.query;
+
+        if (!date || !slot_id) {
+            return res.json({ success: false, groups: [] });
+        }
+
+        const groups = await sqlManager.run('get_free_groups', { 
+            date: date, 
+            slot_id: slot_id 
+        });
+
+        res.json({ success: true, groups });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
 module.exports = router;
