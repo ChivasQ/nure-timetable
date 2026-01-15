@@ -41,7 +41,7 @@ CREATE TABLE `teachers` (
 
 LOCK TABLES `teachers` WRITE;
 /*!40000 ALTER TABLE `teachers` DISABLE KEYS */;
-INSERT INTO `teachers` VALUES (1,'Оксана Олексіївна Мазурова','Мазурова О. О.',1),(2,'Ольга Вікторівна Калиниченко','Калиниченко О. В.',1),(3,'Віталій Миколайович Ляпота','Ляпота В. М.',1),(4,'Наталія Вікторівна Голян','Голян Н. В.',1),(5,'Наталія Євгенівна Русакова','Русакова Н. Є.',1);
+INSERT INTO `teachers` VALUES (1,'Оксана Олексіївна Мазурова1','Оксана О. М.',1),(2,'Ольга Вікторівна Калиниченко','Калиниченко О. В.',1),(3,'Віталій Миколайович Ляпота','Ляпота В. М.',1),(4,'Наталія Вікторівна Голян','Голян Н. В.',1),(5,'Наталія Євгенівна Русакова','Русакова Н. Є.',1);
 /*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-11 14:16:22
+-- Dump completed on 2026-01-15 13:17:35

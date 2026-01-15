@@ -17,7 +17,7 @@
                     <mxGeometry y="148" width="220" height="132" as="geometry"/>
                 </mxCell>
                 <mxCell id="Teacher" value="Teacher" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#d5e8d4;strokeColor=#82b366;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="280" width="200" height="200" as="geometry"/>
+                    <mxGeometry x="40" y="300" width="200" height="200" as="geometry"/>
                 </mxCell>
                 <mxCell id="TeacherAttrs" value="- id: Integer&#xa;- fullName: String&#xa;- shortName: String&#xa;- departmentId: Integer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Teacher" vertex="1">
                     <mxGeometry y="26" width="200" height="64" as="geometry"/>

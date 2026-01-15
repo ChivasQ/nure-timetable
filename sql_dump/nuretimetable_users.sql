@@ -35,7 +35,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Oleksandr','oleksandr.kulinich@nure.ua','$2b$10$2KR717q/83Ss.I/B9C.GlO5zUM8HKYDVGdl5Hxubj.ChS88CnmHK6','2026-01-08 16:12:34',NULL,1);
+INSERT INTO `users` VALUES (1,'Oleksandr','oleksandr.kulinich@nure.ua','$2b$10$2KR717q/83Ss.I/B9C.GlO5zUM8HKYDVGdl5Hxubj.ChS88CnmHK6','2026-01-08 16:12:34',NULL,1),(2,'test','test@nure.ua','$2b$10$EDFDtFYcXbC.8ihG7Nsj1epRXCrHTV1j7KyOwAtv2PpXLZbkC9EfO','2026-01-14 22:55:19',NULL,1),(3,'test1','test1@nure.ua','$2b$10$1CTuQwGhw88dSUVuDE8lsurr1hq14T0ezMKMD0r9NKkXt2IepzMQW','2026-01-15 11:04:35',NULL,1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-11 14:16:21
+-- Dump completed on 2026-01-15 13:17:36

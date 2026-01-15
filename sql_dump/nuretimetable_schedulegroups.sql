@@ -40,7 +40,7 @@ CREATE TABLE `schedulegroups` (
 
 LOCK TABLES `schedulegroups` WRITE;
 /*!40000 ALTER TABLE `schedulegroups` DISABLE KEYS */;
-INSERT INTO `schedulegroups` VALUES (4,1),(5,1),(12,1),(14,1),(15,1),(20,1),(21,1),(23,1),(24,1),(45,1),(46,1),(48,1),(52,6),(56,8);
+INSERT INTO `schedulegroups` VALUES (4,1),(5,1),(12,1),(14,1),(20,1),(21,1),(23,1),(24,1),(45,1),(46,1),(48,1),(57,1),(52,6),(57,7),(56,8),(57,8);
 /*!40000 ALTER TABLE `schedulegroups` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -90,4 +90,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-11 14:16:21
+-- Dump completed on 2026-01-15 13:17:35

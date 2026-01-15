@@ -11,7 +11,7 @@ function formatDate(dateInput) {
 const getMainPage = async (req, res) => {
     try {
 
-        let queryDate = req.query.date ? new Date(req.query.date) : new Date();
+        let queryDate = req.query.date ? new Date(req.query.date) : new Date("09.01.2025");
 
         if (isNaN(queryDate.getTime())) queryDate = new Date();
 
